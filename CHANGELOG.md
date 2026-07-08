@@ -6,6 +6,8 @@ The format is intentionally simple and human-readable.
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-07-09
+
 ### Added
 - Initial product spec, ADRs, and implementation plan
 - Electron + React + TypeScript scaffold

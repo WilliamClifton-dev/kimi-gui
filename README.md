@@ -9,6 +9,15 @@ This project aims to make Kimi easier to use for people who are not comfortable 
 
 ![Kimi GUI homepage](docs/assets/homepage.png)
 
+## v0.1.0
+
+First public MVP release:
+- beginner-friendly first-run setup
+- real Kimi SDK-backed streaming sessions
+- approval handling and runtime activity logs
+- quick actions and copyable diagnostics
+- CI and publish-safety checks for open-source maintenance
+
 ## Why This Exists
 
 Kimi's coding runtime is powerful, but its CLI-first shape raises the barrier for new users. This project tries to preserve Kimi-native workflows while replacing first-contact terminal friction with a guided desktop experience.
@@ -138,6 +147,7 @@ tests/        Unit and integration tests
 - ADR 0001: [docs/adr/0001-product-direction.md](docs/adr/0001-product-direction.md)
 - ADR 0002: [docs/adr/0002-runtime-integration.md](docs/adr/0002-runtime-integration.md)
 - ADR 0003: [docs/adr/0003-desktop-shell.md](docs/adr/0003-desktop-shell.md)
+- Release notes: [docs/releases/v0.1.0.md](docs/releases/v0.1.0.md)
 - Roadmap: [docs/roadmap.md](docs/roadmap.md)
 - Release checklist: [docs/release-checklist.md](docs/release-checklist.md)
 - Plan: [tasks/plan.md](tasks/plan.md)
