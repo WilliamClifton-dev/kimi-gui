@@ -101,7 +101,7 @@ After launching the desktop app, the current MVP supports this flow:
 - Deepen Kimi runtime event coverage and richer approval flows
 - Replace compatible-provider placeholders with real execution paths where the product value is clear
 - Improve first-run UX and diagnostics for non-CLI users
-- Prepare a tagged `v0.1.0` release once the MVP surface stabilizes
+- Turn the `v0.1.0` tag into a polished GitHub Release with screenshots and setup notes
 
 ## Project Goals
 
