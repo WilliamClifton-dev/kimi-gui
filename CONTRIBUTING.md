@@ -22,6 +22,7 @@ Thanks for contributing to Kimi GUI.
    - `npm run typecheck`
    - `npm run lint`
    - `npm run build`
+   - `npm run audit:publish`
 
 ## Contribution Scope
 

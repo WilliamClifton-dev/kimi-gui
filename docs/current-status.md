@@ -17,6 +17,9 @@
 ## What Works Now
 
 - Public repo basics: README, LICENSE, CONTRIBUTING, roadmap, issue templates
+- GitHub automation:
+  - CI workflow for test, typecheck, lint, build, publish audit, and dependency audit
+  - Dependabot for npm and GitHub Actions updates
 - Onboarding and settings UI
 - Provider selection:
   - Kimi
@@ -66,5 +69,5 @@ Deepen runtime coverage and GitHub-ready documentation.
 Target:
 - expand runtime activity coverage beyond the current event subset
 - support richer approval options such as session-wide approval when appropriate
-- refresh README visuals and usage notes to match the shipped MVP
+- keep GitHub-facing docs and automation aligned with the shipped MVP
 - keep placeholder path for compatible providers

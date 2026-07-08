@@ -2,6 +2,9 @@
 
 Beginner-first local GUI for the Kimi coding runtime.
 
+[![CI](https://github.com/WilliamClifton-dev/kimi-gui/actions/workflows/ci.yml/badge.svg)](https://github.com/WilliamClifton-dev/kimi-gui/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
 This project aims to make Kimi easier to use for people who are not comfortable with command-line tools. Instead of memorizing commands, users should be able to configure access, start coding sessions, run common actions, and understand failures through a visual workspace.
 
 ![Kimi GUI homepage](docs/assets/homepage.png)
@@ -20,6 +23,7 @@ Current capabilities:
 - Live runtime activity logs and in-app approval handling
 - Five beginner-friendly quick actions for common coding tasks
 - Expandable diagnostics report for issue filing and troubleshooting
+- Publish safety audit for GitHub-ready repo checks
 - Public repository structure ready for incremental open development
 
 ## Quick Start
@@ -36,6 +40,12 @@ Current capabilities:
    - `npm run lint`
    - `npm run build`
    - `npm run audit:publish`
+
+## Why This Repo Is GitHub-Ready
+
+- CI runs tests, typecheck, lint, build, publish audit, and `npm audit` on every push and PR.
+- The repo includes issue templates, a PR template, a release checklist, and roadmap/spec documents.
+- `npm run audit:publish` helps catch local artifacts and likely secret leaks before publishing.
 
 Note:
 - If Electron binary download fails on your network, rerun `npm install` and then try `npm run electron:dev` again.
@@ -76,6 +86,13 @@ After launching the desktop app, the current MVP supports this flow:
 | `npm run lint` | Run ESLint |
 | `npm run build` | Build renderer and Electron main-side code |
 | `npm run audit:publish` | Scan the workspace for local artifacts and likely secrets before publishing |
+
+## Roadmap Snapshot
+
+- Deepen Kimi runtime event coverage and richer approval flows
+- Replace compatible-provider placeholders with real execution paths where the product value is clear
+- Improve first-run UX and diagnostics for non-CLI users
+- Prepare a tagged `v0.1.0` release once the MVP surface stabilizes
 
 ## Project Goals
 

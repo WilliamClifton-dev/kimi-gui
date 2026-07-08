@@ -17,6 +17,8 @@ The format is intentionally simple and human-readable.
 - Five built-in quick action templates for beginner workflows
 - Expandable diagnostics report with copy support
 - Publish safety audit with workspace scanning for ignored local artifacts and likely leaked API keys
+- GitHub Actions CI workflow for test, typecheck, lint, build, publish audit, and dependency audit
+- Dependabot updates for npm packages and GitHub Actions
 
 ### Changed
 - Upgraded Electron to `43.1.0` to clear the previous high-severity audit finding
