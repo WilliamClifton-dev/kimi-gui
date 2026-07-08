@@ -1,0 +1,22 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is intentionally simple and human-readable.
+
+## [Unreleased]
+
+### Added
+- Initial product spec, ADRs, and implementation plan
+- Electron + React + TypeScript scaffold
+- First-run onboarding and settings flow scaffold
+- GitHub-facing repository documents and collaboration templates
+- Real Kimi SDK-backed session execution path
+- Streamed assistant text updates in the desktop UI
+- Runtime activity logs and GUI approval handling
+- Five built-in quick action templates for beginner workflows
+- Expandable diagnostics report with copy support
+- Publish safety audit with workspace scanning for ignored local artifacts and likely leaked API keys
+
+### Changed
+- Upgraded Electron to `43.1.0` to clear the previous high-severity audit finding

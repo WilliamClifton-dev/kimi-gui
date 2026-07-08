@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-electron/
+build/
+out/
+coverage/
+
+# Desktop packaging
+release/
+src-tauri/target/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.codex/
+
+# Test artifacts
+playwright-report/
+test-results/
+
+# Local app data
+.cache/
+.tmp/
+tmp/
