@@ -27,7 +27,7 @@ describe("sanitizeSettingsDraft", () => {
 });
 
 describe("validateSettingsDraft", () => {
-  it("rejects incomplete beginner setup", () => {
+  it("rejects incomplete beginner setup with Chinese field errors", () => {
     expect(
       validateSettingsDraft({
         providerType: "kimi",
@@ -38,9 +38,9 @@ describe("validateSettingsDraft", () => {
     ).toEqual({
       isValid: false,
       fieldErrors: {
-        apiKey: "API key is required.",
-        defaultModel: "Choose a default model.",
-        baseUrl: "Base URL must be a valid URL."
+        apiKey: "API Key 不能为空。",
+        defaultModel: "请选择默认模型。",
+        baseUrl: "Base URL 必须是有效的 URL。"
       }
     });
   });
@@ -80,5 +80,10 @@ describe("provider profiles", () => {
   it("marks Kimi as native mode and OpenAI as compatible mode", () => {
     expect(getProviderProfile("kimi").providerMode).toBe("kimi-native");
     expect(getProviderProfile("openai").providerMode).toBe("compatible");
+  });
+
+  it("exposes Chinese help text for provider guidance", () => {
+    expect(getProviderProfile("kimi").helpText).toContain("Kimi 原生工作流");
+    expect(getProviderProfile("openai").helpText).toContain("兼容模式");
   });
 });

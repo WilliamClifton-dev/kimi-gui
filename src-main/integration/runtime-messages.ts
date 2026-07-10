@@ -2,28 +2,28 @@ export function mapKimiRuntimeError(code: string | undefined) {
   switch (code) {
     case "CLI_NOT_FOUND":
       return {
-        title: "Kimi CLI was not found",
-        detail: "Install Kimi CLI locally and make sure the `kimi` command is available in your PATH."
+        title: "没有找到 Kimi CLI",
+        detail: "请先在本机安装 Kimi CLI，并确认命令行可以直接运行 `kimi`。"
       };
     case "HANDSHAKE_TIMEOUT":
       return {
-        title: "Kimi runtime did not start in time",
-        detail: "The local Kimi process did not finish startup. Try again after confirming the CLI can launch normally."
+        title: "Kimi 运行时启动超时",
+        detail: "本地 Kimi 进程没有及时完成启动。请先确认 Kimi CLI 能正常运行，然后重试。"
       };
     case "LLM_NOT_SET":
       return {
-        title: "No Kimi model is configured",
-        detail: "Check your provider setup and confirm a valid Kimi model is selected."
+        title: "还没有配置 Kimi 模型",
+        detail: "请检查提供方设置，并确认已经选择有效的 Kimi 模型。"
       };
     case "CHAT_PROVIDER_ERROR":
       return {
-        title: "The Kimi provider rejected the request",
-        detail: "Check your API key, base URL, login state, or model configuration."
+        title: "Kimi 提供方拒绝了请求",
+        detail: "请检查 API Key、Base URL、登录状态和模型配置。"
       };
     default:
       return {
-        title: "Kimi runtime request failed",
-        detail: "Make sure local Kimi CLI is installed and logged in before using the real adapter path."
+        title: "Kimi 运行请求失败",
+        detail: "请确认本机已经安装 Kimi CLI 并完成登录，然后再重试。"
       };
   }
 }

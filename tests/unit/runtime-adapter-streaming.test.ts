@@ -138,7 +138,7 @@ describe("kimiRuntimeAdapter streaming", () => {
     });
 
     expect(chunks).toEqual(["Hello", "Hello world"]);
-    expect(logs).toEqual(["Starting step 1.", "Running tool: read_file."]);
+    expect(logs).toEqual(["开始执行第 1 步。", "正在运行工具：read_file。"]);
     expect(result.messages.at(-1)?.content).toBe("Hello world");
     expect(result.runtimeLogs?.map((entry) => entry.message)).toEqual(logs);
     expect(result.status).toBe("completed");
