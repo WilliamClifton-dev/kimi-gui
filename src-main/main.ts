@@ -7,6 +7,7 @@ import { resolvePendingApproval, runtimeAdapter } from "./integration/runtime-ad
 import { getRuntimeHealth } from "./integration/runtime-health";
 import { loadSettings, saveSettings } from "./storage/settings-store";
 import { loadSessions, saveSessions, toSessionSummary } from "./storage/sessions-store";
+import { getPackagedRendererPath } from "./window-paths";
 import type {
   ApprovalDecision,
   AppInfo,
@@ -42,7 +43,7 @@ function createWindow() {
     return;
   }
 
-  void win.loadFile(path.resolve(__dirname, "../dist/index.html"));
+  void win.loadFile(getPackagedRendererPath(__dirname));
 }
 
 function registerIpcHandlers() {

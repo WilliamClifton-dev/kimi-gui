@@ -6,6 +6,17 @@ The format is intentionally simple and human-readable.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-07-10
+
+### Added
+- Chinese-first interface copy, runtime guidance, quick actions, and repository documentation
+- Windows installer and portable builds through `electron-builder`
+- Tag-driven GitHub Actions workflow that attaches Windows builds to Releases
+- Branded application icon and refreshed Chinese product screenshot
+
+### Fixed
+- Corrected the packaged Electron main-process entry and production renderer path
+
 ## [0.1.0] - 2026-07-09
 
 ### Added

@@ -1,9 +1,9 @@
 {
   "name": "kimi-gui",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "Beginner-first local GUI for the Kimi coding runtime.",
-  "main": "dist-electron/main.js",
+  "description": "面向中文新手的 Kimi Code 本地桌面工作台。",
+  "main": "dist-electron/src-main/main.js",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,7 +14,8 @@
     "audit:publish": "npm run build:main && node dist-electron/src-main/tools/publish-audit.js",
     "test": "vitest run",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.main.json"
+    "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.main.json",
+    "dist:win": "npm run build && electron-builder --win nsis portable"
   },
   "dependencies": {
     "@moonshot-ai/kimi-agent-sdk": "^0.1.8",
@@ -30,6 +31,7 @@
     "@vitejs/plugin-react": "^5.0.2",
     "concurrently": "^9.2.0",
     "electron": "^43.1.0",
+    "electron-builder": "^26.15.3",
     "eslint": "^10.6.0",
     "globals": "^17.7.0",
     "typescript": "^5.8.3",
@@ -37,5 +39,38 @@
     "vite": "^7.0.4",
     "vitest": "^3.2.4",
     "wait-on": "^9.0.10"
-  }
+  },
+  "build": {
+    "appId": "dev.williamclifton.kimigui",
+    "productName": "Kimi GUI",
+    "artifactName": "${productName}-${version}-${arch}.${ext}",
+    "directories": {
+      "output": "release"
+    },
+    "asar": true,
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Kimi GUI",
+      "artifactName": "Kimi-GUI-Setup-${version}-${arch}.${ext}"
+    },
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "portable": {
+      "artifactName": "Kimi-GUI-Portable-${version}-${arch}.${ext}"
+    }
+  },
+  "author": "WilliamClifton-dev"
 }
