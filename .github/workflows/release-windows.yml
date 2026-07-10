@@ -1,10 +1,12 @@
 name: Release Windows App
 
 on:
-  push:
-    tags:
-      - "v*"
   workflow_dispatch:
+    inputs:
+      version:
+        description: "要发布的版本标签，例如 v0.2.0"
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -27,11 +29,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run quality checks
-        run: |
-          npm run test
-          npm run typecheck
-          npm run lint
+      - name: Run unit tests
+        run: npm run test
+
+      - name: Run type checks
+        run: npm run typecheck
+
+      - name: Run lint checks
+        run: npm run lint
 
       - name: Build Windows installer and portable app
         run: npm run dist:win
@@ -39,25 +44,20 @@ jobs:
       - name: Upload workflow artifacts
         uses: actions/upload-artifact@v6
         with:
-          name: kimi-gui-windows-${{ github.ref_name }}
+          name: kimi-gui-windows-${{ inputs.version }}
           path: |
             release/Kimi-GUI-Setup-*.exe
             release/Kimi-GUI-Portable-*.exe
             release/*.blockmap
           if-no-files-found: error
 
-      - name: Create GitHub Release if needed
-        if: startsWith(github.ref, 'refs/tags/v')
+      - name: Create or update GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.version }}
         run: |
-          gh release view $env:GITHUB_REF_NAME 2>$null
+          gh release view $env:RELEASE_TAG 2>$null
           if ($LASTEXITCODE -ne 0) {
-            gh release create $env:GITHUB_REF_NAME --title $env:GITHUB_REF_NAME --generate-notes
+            gh release create $env:RELEASE_TAG --target $env:GITHUB_SHA --title "Kimi GUI $env:RELEASE_TAG" --generate-notes
           }
-
-      - name: Attach files to GitHub Release
-        if: startsWith(github.ref, 'refs/tags/v')
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh release upload $env:GITHUB_REF_NAME release/Kimi-GUI-Setup-*.exe release/Kimi-GUI-Portable-*.exe release/*.blockmap --clobber
+          gh release upload $env:RELEASE_TAG release/Kimi-GUI-Setup-*.exe release/Kimi-GUI-Portable-*.exe release/*.blockmap --clobber
