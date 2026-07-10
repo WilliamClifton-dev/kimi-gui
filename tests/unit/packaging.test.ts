@@ -32,6 +32,7 @@ describe("desktop packaging", () => {
 
   it("defines Windows installer and portable build targets", () => {
     expect(packageJson.scripts["dist:win"]).toContain("electron-builder");
+    expect(packageJson.scripts["dist:win"]).toContain("--publish never");
     expect(packageJson.build?.appId).toBe("dev.williamclifton.kimigui");
     expect(packageJson.build?.files).toContain("dist/**/*");
     expect(packageJson.build?.files).toContain("dist-electron/**/*");
