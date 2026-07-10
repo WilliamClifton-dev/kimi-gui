@@ -47,7 +47,9 @@ describe("desktop packaging", () => {
       "utf8"
     );
 
-    expect(workflow).toContain('tags:\n      - "v*"');
+    const normalizedWorkflow = workflow.replaceAll("\r\n", "\n");
+
+    expect(normalizedWorkflow).toContain('tags:\n      - "v*"');
     expect(workflow).toContain("npm run dist:win");
     expect(workflow).toContain("gh release create");
     expect(workflow).toContain("gh release upload");
