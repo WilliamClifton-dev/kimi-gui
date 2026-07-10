@@ -23,8 +23,11 @@ describe("desktop packaging", () => {
   });
 
   it("resolves the packaged renderer outside dist-electron", () => {
-    expect(getPackagedRendererPath("D:/repo/dist-electron/src-main").replaceAll("\\", "/"))
-      .toBe("D:/repo/dist/index.html");
+    const projectRoot = path.resolve(process.cwd(), ".tmp-packaging-project");
+    const mainDirectory = path.join(projectRoot, "dist-electron", "src-main");
+
+    expect(getPackagedRendererPath(mainDirectory))
+      .toBe(path.join(projectRoot, "dist", "index.html"));
   });
 
   it("defines Windows installer and portable build targets", () => {
