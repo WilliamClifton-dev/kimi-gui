@@ -49,7 +49,9 @@ describe("desktop packaging", () => {
 
     const normalizedWorkflow = workflow.replaceAll("\r\n", "\n");
 
-    expect(normalizedWorkflow).toContain('tags:\n      - "v*"');
+    expect(normalizedWorkflow).not.toContain("push:\n    tags:");
+    expect(normalizedWorkflow).toContain("workflow_dispatch:");
+    expect(normalizedWorkflow).toContain("version:");
     expect(workflow).toContain("npm run dist:win");
     expect(workflow).toContain("gh release create");
     expect(workflow).toContain("gh release upload");
