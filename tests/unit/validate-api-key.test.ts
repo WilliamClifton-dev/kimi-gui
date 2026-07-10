@@ -4,17 +4,17 @@ import { validateApiKey } from "../../src/lib/validate-api-key";
 const kimiFixtureKey = ["kimi_", "abcdefghijklmnopqrstuvwxyz"].join("");
 
 describe("validateApiKey", () => {
-  it("rejects an empty value", () => {
+  it("rejects an empty value with Chinese guidance", () => {
     expect(validateApiKey("")).toEqual({
       status: "invalid",
-      reason: "API key is required."
+      reason: "API Key 不能为空。"
     });
   });
 
-  it("rejects an obviously incomplete value", () => {
+  it("rejects an obviously incomplete value with Chinese guidance", () => {
     expect(validateApiKey("short-key")).toEqual({
       status: "invalid",
-      reason: "API key format looks incomplete."
+      reason: "API Key 看起来不完整。"
     });
   });
 

@@ -6,12 +6,13 @@ import type {
   SettingsDraft,
   SettingsRecord
 } from "../shared/contracts";
+import { runtimeCopy } from "./copy";
 import { DEFAULT_SETTINGS, getProviderProfile, sanitizeSettingsDraft } from "./settings";
 
 const fallbackSessions: SessionDetail[] = [];
 
 function makeSessionTitle(index: number) {
-  return `New session ${index}`;
+  return `新会话 ${index}`;
 }
 
 function toSummary(session: SessionDetail): SessionSummary {
@@ -66,7 +67,7 @@ const browserFallbackBridge: DesktopBridge = {
         {
           id: `${fallbackSessions.length + 1}-system`,
           role: "system",
-          content: "This is a local session scaffold. Runtime integration comes next.",
+          content: runtimeCopy.browserSessionCreated,
           createdAt: now
         }
       ]
@@ -81,7 +82,7 @@ const browserFallbackBridge: DesktopBridge = {
     const session = fallbackSessions.find((item) => item.id === sessionId);
 
     if (!session) {
-      throw new Error("Session not found.");
+      throw new Error(runtimeCopy.sessionNotFound);
     }
 
     const now = new Date().toISOString();
@@ -97,7 +98,7 @@ const browserFallbackBridge: DesktopBridge = {
       id: `${session.id}-assistant-${session.messages.length + 1}`,
       role: "assistant",
       content:
-        "This is a placeholder assistant response. The next milestone connects this surface to the real Kimi runtime.",
+        runtimeCopy.browserPlaceholderResponse,
       createdAt: new Date().toISOString()
     });
     session.runtimeLogs = [
@@ -105,7 +106,7 @@ const browserFallbackBridge: DesktopBridge = {
       {
         id: `${session.id}-runtime-log-${session.messages.length + 1}`,
         level: "info",
-        message: "Placeholder runtime completed this local browser-only response.",
+        message: runtimeCopy.browserRuntimeCompleted,
         createdAt: new Date().toISOString()
       }
     ];

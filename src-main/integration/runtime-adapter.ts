@@ -5,6 +5,7 @@ import {
   isAgentSdkError
 } from "@moonshot-ai/kimi-agent-sdk";
 import { formatSessionTitle } from "../../src/lib/sessions";
+import { runtimeCopy } from "../../src/lib/copy";
 import { mapKimiRuntimeError } from "./runtime-messages";
 import { buildRuntimeBridgeConfig } from "./config-bridge";
 import type {
@@ -63,9 +64,15 @@ function isTextContentEvent(
 }
 
 function buildPlaceholderAssistantMessage(providerType: ProviderType) {
-  const providerLabel = providerType === "kimi" ? "Kimi runtime" : `${providerType} compatible runtime`;
+  const providerLabels: Record<ProviderType, string> = {
+    kimi: "Kimi 原生模式",
+    openai: "OpenAI 兼容模式",
+    deepseek: "DeepSeek 兼容模式",
+    anthropic: "Anthropic 兼容模式",
+    gemini: "Gemini 兼容模式"
+  };
 
-  return `Placeholder response from the ${providerLabel}. The runtime adapter boundary is now in place, and the next milestone swaps this implementation for a real execution path.`;
+  return runtimeCopy.placeholderResponse(providerLabels[providerType]);
 }
 
 function appendRuntimeLog(logs: RuntimeLogEntry[], level: RuntimeLogEntry["level"], message: string) {
@@ -141,7 +148,7 @@ function readApprovalRequest(event: unknown): PendingApproval | null {
   return {
     id: maybeEvent.payload.id,
     action: typeof maybeEvent.payload.action === "string" ? maybeEvent.payload.action : "approval",
-    description: readApprovalDescription(event) ?? "Approval required before the runtime can continue."
+    description: readApprovalDescription(event) ?? runtimeCopy.approvalDefaultDescription
   };
 }
 
@@ -149,7 +156,7 @@ export async function resolvePendingApproval(sessionId: string, response: Approv
   const pending = activeApprovalRequests.get(sessionId);
 
   if (!pending) {
-    throw new Error("No pending approval request was found for this session.");
+    throw new Error(runtimeCopy.pendingApprovalNotFound);
   }
 
   await pending.approve(response);
@@ -209,7 +216,7 @@ function appendFailureMessage(session: SessionDetail, prompt: string, reason: st
     updatedAt: new Date().toISOString(),
     runtimeNote: {
       level: "error",
-      title: "Runtime request failed",
+      title: runtimeCopy.requestFailedTitle,
       detail: reason
     },
     messages
@@ -247,7 +254,7 @@ export const kimiRuntimeAdapter: RuntimeAdapter = {
           const log = appendRuntimeLog(
             runtimeLogs,
             "info",
-            stepNumber ? `Starting step ${stepNumber}.` : "Starting a new runtime step."
+            runtimeCopy.stepStarted(stepNumber)
           );
           onRuntimeLog?.(log, { status: "streaming" });
           continue;
@@ -258,7 +265,7 @@ export const kimiRuntimeAdapter: RuntimeAdapter = {
           const log = appendRuntimeLog(
             runtimeLogs,
             "info",
-            toolName ? `Running tool: ${toolName}.` : "Running a tool."
+            runtimeCopy.toolRunning(toolName)
           );
           onRuntimeLog?.(log, { status: "streaming" });
           continue;
@@ -268,7 +275,7 @@ export const kimiRuntimeAdapter: RuntimeAdapter = {
           const log = appendRuntimeLog(
             runtimeLogs,
             "info",
-            "Context compaction started to keep the session moving."
+            runtimeCopy.compactionStarted
           );
           onRuntimeLog?.(log, { status: "streaming" });
           continue;
@@ -278,7 +285,7 @@ export const kimiRuntimeAdapter: RuntimeAdapter = {
           const log = appendRuntimeLog(
             runtimeLogs,
             "info",
-            "Context compaction finished."
+            runtimeCopy.compactionFinished
           );
           onRuntimeLog?.(log, { status: "streaming" });
           continue;
@@ -297,18 +304,15 @@ export const kimiRuntimeAdapter: RuntimeAdapter = {
           const log = appendRuntimeLog(
             runtimeLogs,
             "warn",
-            description
-              ? `Approval required: ${description}`
-              : "Approval required before the runtime can continue."
+            runtimeCopy.approvalRequiredLog(description)
+
           );
           onRuntimeLog?.(log, {
             status: "awaiting_approval",
             runtimeNote: {
               level: "warn",
-              title: "Approval required",
-              detail: description
-                ? `Kimi paused and needs approval: ${description}`
-                : "Kimi paused and needs approval before continuing."
+              title: runtimeCopy.approvalRequiredTitle,
+              detail: runtimeCopy.approvalRequiredDetail(description)
             },
             pendingApproval
           });
@@ -334,7 +338,7 @@ export const kimiRuntimeAdapter: RuntimeAdapter = {
       const assistantMessage: SessionMessage = {
         id: `assistant-${Date.now() + 1}`,
         role: "assistant",
-        content: assistantText.trim() || "Kimi returned an empty text response.",
+        content: assistantText.trim() || runtimeCopy.emptyResponse,
         createdAt: new Date().toISOString()
       };
       const messages = [...session.messages, userMessage, assistantMessage];
@@ -346,8 +350,8 @@ export const kimiRuntimeAdapter: RuntimeAdapter = {
         updatedAt: new Date().toISOString(),
         runtimeNote: {
           level: "info",
-          title: "Runtime request completed",
-          detail: "Response received from the active runtime adapter."
+          title: runtimeCopy.requestCompletedTitle,
+          detail: runtimeCopy.requestCompletedDetail
         },
         messages,
         runtimeLogs,

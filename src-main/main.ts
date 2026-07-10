@@ -2,10 +2,12 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { DEFAULT_SETTINGS, getProviderProfile, sanitizeSettingsDraft } from "../src/lib/settings";
+import { runtimeCopy } from "../src/lib/copy";
 import { resolvePendingApproval, runtimeAdapter } from "./integration/runtime-adapter";
 import { getRuntimeHealth } from "./integration/runtime-health";
 import { loadSettings, saveSettings } from "./storage/settings-store";
 import { loadSessions, saveSessions, toSessionSummary } from "./storage/sessions-store";
+import { getPackagedRendererPath } from "./window-paths";
 import type {
   ApprovalDecision,
   AppInfo,
@@ -41,7 +43,7 @@ function createWindow() {
     return;
   }
 
-  void win.loadFile(path.resolve(__dirname, "../dist/index.html"));
+  void win.loadFile(getPackagedRendererPath(__dirname));
 }
 
 function registerIpcHandlers() {
@@ -89,15 +91,15 @@ function registerIpcHandlers() {
     const now = new Date().toISOString();
     const session: SessionDetail = {
       id: `session-${Date.now()}`,
-      title: `New session ${sessions.length + 1}`,
+      title: `新会话 ${sessions.length + 1}`,
       status: "idle",
       updatedAt: now,
       providerLabel: providerProfile.label,
       model: settings.defaultModel,
       runtimeNote: {
         level: "info",
-        title: "Session ready",
-        detail: "You can send the first prompt when you are ready."
+        title: runtimeCopy.sessionReadyTitle,
+        detail: runtimeCopy.sessionReadyDetail
       },
       runtimeLogs: [],
       pendingApproval: null,
@@ -105,7 +107,7 @@ function registerIpcHandlers() {
         {
           id: `system-${Date.now()}`,
           role: "system",
-          content: "Session created. Runtime connection will be added in the next milestone.",
+          content: runtimeCopy.sessionCreatedMessage,
           createdAt: now
         }
       ]
@@ -148,8 +150,8 @@ function registerIpcHandlers() {
             assistantText,
             runtimeNote: {
               level: "info",
-              title: "Runtime request in progress",
-              detail: "Kimi is generating a response."
+              title: runtimeCopy.requestInProgressTitle,
+              detail: runtimeCopy.requestInProgressDetail
             },
             pendingApproval: null
           };
@@ -177,7 +179,7 @@ function registerIpcHandlers() {
 
     const updatedSession = nextSessions.find((session) => session.id === sessionId);
     if (!updatedSession) {
-      throw new Error("Session not found.");
+      throw new Error(runtimeCopy.sessionNotFound);
     }
 
     await saveSessions(app, nextSessions);
@@ -197,10 +199,10 @@ function registerIpcHandlers() {
       updatedAt: new Date().toISOString(),
       runtimeNote: {
         level: "info",
-        title: "Approval sent",
+        title: runtimeCopy.approvalSentTitle,
         detail: decision === "approve"
-          ? "Approval sent to Kimi. The session is continuing."
-          : "Rejection sent to Kimi. Waiting for the runtime to respond."
+          ? runtimeCopy.approvalApprovedDetail
+          : runtimeCopy.approvalRejectedDetail
       },
       pendingApproval: null
     };
