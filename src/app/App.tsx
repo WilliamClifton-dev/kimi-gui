@@ -1,5 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { getActionTemplates } from "../lib/action-templates";
+import {
+  appCopy,
+  desktopShellLabels,
+  getRuntimeStatusLabel,
+  integrationModeLabels,
+  messageRoleLabels,
+  providerModeLabels,
+  runtimeStatusLabels
+} from "../lib/copy";
 import { getDesktopBridge } from "../lib/desktop-bridge";
 import { buildDiagnosticsReport } from "../lib/diagnostics";
 import { sortSessionsByUpdatedAt } from "../lib/sessions";
@@ -17,19 +26,8 @@ import type {
   SessionMessage,
   SessionSummary,
   SettingsDraft,
-  SettingsValidation,
-  RuntimeStatus
+  SettingsValidation
 } from "../shared/contracts";
-
-const statusLabels: Record<RuntimeStatus, string> = {
-  idle: "Idle",
-  validating: "Validating setup",
-  ready: "Ready",
-  streaming: "Streaming",
-  awaiting_approval: "Awaiting approval",
-  completed: "Completed",
-  failed: "Failed"
-};
 
 export function App() {
   const bridge = useMemo(() => getDesktopBridge(), []);
@@ -166,7 +164,7 @@ export function App() {
         defaultModel: saved.defaultModel,
         baseUrl: saved.baseUrl
       });
-      setSaveMessage("Setup saved. You can start your first Kimi session next.");
+      setSaveMessage(appCopy.setup.saveSuccess);
     } finally {
       setIsSaving(false);
     }
@@ -213,8 +211,8 @@ export function App() {
       updatedAt: pendingTime,
       runtimeNote: {
         level: "info",
-        title: "Runtime request in progress",
-        detail: "Waiting for the active runtime adapter to return a response."
+        title: appCopy.runtime.requestInProgressTitle,
+        detail: appCopy.runtime.requestInProgressDetail
       },
       messages: [
         ...activeSession.messages,
@@ -227,7 +225,7 @@ export function App() {
         {
           id: `pending-assistant-${Date.now() + 1}`,
           role: "assistant",
-          content: "Generating response...",
+          content: appCopy.runtime.generatingResponse,
           createdAt: pendingTime
         }
       ]
@@ -281,10 +279,10 @@ export function App() {
               pendingApproval: null,
               runtimeNote: {
                 level: "info",
-                title: "Approval sent",
+                title: appCopy.runtime.approvalSentTitle,
                 detail: decision === "approve"
-                  ? "Approval sent to Kimi. The session is continuing."
-                  : "Rejection sent to Kimi. Waiting for the runtime to respond."
+                  ? appCopy.runtime.approvalApprovedDetail
+                  : appCopy.runtime.approvalRejectedDetail
               }
             }
           : current
@@ -305,14 +303,14 @@ export function App() {
         throw new Error("Clipboard API unavailable.");
       }
       await navigator.clipboard.writeText(report);
-      setDiagnosticsCopyState("Diagnostics copied.");
+      setDiagnosticsCopyState(appCopy.sessions.diagnosticsCopied);
     } catch {
-      setDiagnosticsCopyState("Copy failed. You can still select the report manually.");
+      setDiagnosticsCopyState(appCopy.sessions.diagnosticsCopyFailed);
     }
   }
 
   const hasCompletedOnboarding = bootstrap?.settings.hasCompletedOnboarding ?? false;
-  const currentStateLabel = bootstrap ? statusLabels[bootstrap.runtimeStatus] : "Connecting";
+  const currentStateLabel = bootstrap ? getRuntimeStatusLabel(bootstrap.runtimeStatus) : "连接中";
   const currentProviderProfile = getProviderProfile(draft.providerType);
   const actionTemplates = getActionTemplates(currentProviderProfile.providerMode);
   const diagnosticsReport = buildDiagnosticsReport({
@@ -326,33 +324,30 @@ export function App() {
     <main className="shell">
       <section className="hero">
         <div className="hero-topline">
-          <p className="eyebrow">Kimi Workspace</p>
-          <div className="hero-badges" aria-label="Product highlights">
-            <span className="hero-badge">Beginner-first</span>
-            <span className="hero-badge">Kimi-native</span>
-            <span className="hero-badge">Local desktop</span>
+          <p className="eyebrow">{appCopy.hero.eyebrow}</p>
+          <div className="hero-badges" aria-label={appCopy.hero.highlightsLabel}>
+            <span className="hero-badge">{appCopy.hero.beginnerBadge}</span>
+            <span className="hero-badge">{appCopy.hero.nativeBadge}</span>
+            <span className="hero-badge">{appCopy.hero.localBadge}</span>
           </div>
         </div>
 
         <div className="hero-layout">
           <div className="hero-copy">
-            <h1>Use Kimi Code without learning the terminal first</h1>
-            <p className="lede">
-              A local desktop workspace for beginners who want Kimi-native coding
-              workflows, clearer setup, and fewer command-line blockers.
-            </p>
+            <h1>{appCopy.hero.title}</h1>
+            <p className="lede">{appCopy.hero.lede}</p>
 
             <div className="hero-actions">
               <button className="primary-button" type="button" onClick={() => void handleSave()}>
-                {hasCompletedOnboarding ? "Refresh setup" : "Start setup"}
+                {hasCompletedOnboarding ? appCopy.hero.refreshSetup : appCopy.hero.startSetup}
               </button>
               <span className="hero-note">
-                Current state: <strong>{currentStateLabel}</strong>
+                {appCopy.hero.currentState}：<strong>{currentStateLabel}</strong>
               </span>
             </div>
           </div>
 
-          <aside className="hero-preview" aria-label="Preview summary">
+          <aside className="hero-preview" aria-label={appCopy.hero.previewLabel}>
             <div className="preview-header">
               <span className="preview-dot preview-dot-active" />
               <span className="preview-dot" />
@@ -360,39 +355,36 @@ export function App() {
             </div>
 
             <div className="preview-card">
-              <p className="preview-label">Workflow direction</p>
-              <h2>Onboarding first, runtime depth second</h2>
-              <p>
-                The first release helps new users configure Kimi, start their
-                first session, and understand what the app is doing.
-              </p>
+              <p className="preview-label">{appCopy.hero.workflowDirectionLabel}</p>
+              <h2>{appCopy.hero.workflowDirectionTitle}</h2>
+              <p>{appCopy.hero.workflowDirectionBody}</p>
             </div>
 
             <div className="preview-metrics">
               <div>
-                <dt>Default shell</dt>
+                <dt>{appCopy.hero.defaultShell}</dt>
                 <dd>Electron</dd>
               </div>
               <div>
-                <dt>Runtime mode</dt>
-                <dd>{bootstrap?.appInfo.integrationMode ?? "sdk-first"}</dd>
+                <dt>{appCopy.hero.runtimeMode}</dt>
+                <dd>{integrationModeLabels[bootstrap?.appInfo.integrationMode ?? "sdk-first"]}</dd>
               </div>
               <div>
-                <dt>Focus</dt>
-                <dd>First-run setup</dd>
+                <dt>{appCopy.hero.focus}</dt>
+                <dd>{appCopy.hero.focusValue}</dd>
               </div>
               <div>
-                <dt>Provider</dt>
+                <dt>{appCopy.hero.provider}</dt>
                 <dd>{currentProviderProfile.label}</dd>
               </div>
               <div>
-                <dt>Kimi CLI</dt>
+                <dt>{appCopy.hero.kimiCli}</dt>
                 <dd>
                   {runtimeHealth?.cliAvailable
                     ? runtimeHealth.loggedIn
-                      ? "Ready"
-                      : "Installed, login needed"
-                    : "Not found"}
+                      ? appCopy.hero.kimiCliReady
+                      : appCopy.hero.kimiCliLoginRequired
+                    : appCopy.hero.kimiCliMissing}
                 </dd>
               </div>
             </div>
@@ -402,26 +394,18 @@ export function App() {
 
       <section className="grid">
         <article className="card">
-          <h2>What this app does</h2>
-          <p>
-            It helps beginners finish setup, start sessions, and understand
-            failures without needing to learn `kimi-cli` syntax first.
-          </p>
+          <h2>{appCopy.overview.whatAppDoesTitle}</h2>
+          <p>{appCopy.overview.whatAppDoesBody}</p>
           <ul className="mini-list">
-            <li>first-run guidance</li>
-            <li>Kimi-native workflow direction</li>
-            <li>beginner-friendly diagnostics</li>
+            {appCopy.overview.featureList.map((item) => <li key={item}>{item}</li>)}
           </ul>
         </article>
 
         <article className="card">
-          <h2>Runtime states</h2>
-          <p>
-            Session and setup states are modeled in typed contracts before we
-            wire the full runtime flow.
-          </p>
+          <h2>{appCopy.overview.runtimeStatesTitle}</h2>
+          <p>{appCopy.overview.runtimeStatesBody}</p>
           <div className="status-list">
-            {Object.entries(statusLabels).map(([status, label]) => (
+            {Object.entries(runtimeStatusLabels).map(([status, label]) => (
               <span className="status-pill" key={status}>
                 {label}
               </span>
@@ -430,25 +414,28 @@ export function App() {
         </article>
 
         <article className="card">
-          <h2>App status</h2>
+          <h2>{appCopy.overview.appStatusTitle}</h2>
           <p>
             {bootstrap
-              ? `Connected to ${bootstrap.appInfo.productName} on ${bootstrap.appInfo.desktopShell}.`
-              : "Waiting for main-process bridge..."}
+              ? appCopy.overview.appConnected(
+                  bootstrap.appInfo.productName,
+                  desktopShellLabels[bootstrap.appInfo.desktopShell]
+                )
+              : appCopy.overview.appWaiting}
           </p>
           {bootstrap ? (
             <dl className="meta">
               <div>
-                <dt>Version</dt>
+                <dt>{appCopy.overview.version}</dt>
                 <dd>{bootstrap.appInfo.version}</dd>
               </div>
               <div>
-                <dt>Mode</dt>
-                <dd>{bootstrap.appInfo.integrationMode}</dd>
+                <dt>{appCopy.overview.mode}</dt>
+                <dd>{integrationModeLabels[bootstrap.appInfo.integrationMode]}</dd>
               </div>
               <div>
-                <dt>Current state</dt>
-                <dd>{statusLabels[bootstrap.runtimeStatus]}</dd>
+                <dt>{appCopy.overview.currentState}</dt>
+                <dd>{getRuntimeStatusLabel(bootstrap.runtimeStatus)}</dd>
               </div>
             </dl>
           ) : null}
@@ -457,60 +444,46 @@ export function App() {
 
       <section className="showcase-grid">
         <article className="card feature-card">
-          <p className="eyebrow">Why beginners struggle</p>
-          <h2>CLI friction shows up before Kimi value does</h2>
-          <p>
-            New users hit setup, model selection, base URL confusion, and error
-            messages before they ever reach their first successful session.
-          </p>
+          <p className="eyebrow">{appCopy.showcase.struggleEyebrow}</p>
+          <h2>{appCopy.showcase.struggleTitle}</h2>
+          <p>{appCopy.showcase.struggleBody}</p>
         </article>
 
         <article className="card feature-card">
-          <p className="eyebrow">What this product keeps</p>
-          <h2>Kimi-native workflow, not just model access</h2>
-          <p>
-            The goal is to preserve Kimi Code style workflows and future plugin
-            or MCP growth without making the first-run experience harder.
-          </p>
+          <p className="eyebrow">{appCopy.showcase.productEyebrow}</p>
+          <h2>{appCopy.showcase.productTitle}</h2>
+          <p>{appCopy.showcase.productBody}</p>
         </article>
 
         <article className="card feature-card">
-          <p className="eyebrow">What ships first</p>
-          <h2>A small MVP that still feels like a real product</h2>
-          <p>
-            First-run guidance, settings, session-ready architecture, and a UI
-            that already explains why the project exists.
-          </p>
+          <p className="eyebrow">{appCopy.showcase.shipEyebrow}</p>
+          <h2>{appCopy.showcase.shipTitle}</h2>
+          <p>{appCopy.showcase.shipBody}</p>
         </article>
       </section>
 
       <section className="setup-panel">
         <article className="setup-card">
           <div className="setup-copy">
-            <p className="eyebrow">First-run setup</p>
-            <h2>{hasCompletedOnboarding ? "Your setup is ready" : "Connect Kimi in under a minute"}</h2>
-            <p>
-              Choose a provider first. Kimi mode aims for the fullest workflow.
-              Compatible providers can still work, but some advanced features may differ.
-            </p>
+            <p className="eyebrow">{appCopy.setup.eyebrow}</p>
+            <h2>{hasCompletedOnboarding ? appCopy.setup.readyTitle : appCopy.setup.startTitle}</h2>
+            <p>{appCopy.setup.intro}</p>
             <ul className="setup-list">
-              <li>No terminal commands required</li>
-              <li>Settings stay local on your machine</li>
-              <li>Advanced logs remain available later for debugging</li>
+              {appCopy.setup.bulletList.map((item) => <li key={item}>{item}</li>)}
             </ul>
 
             <div className="setup-status-panel">
               <div>
-                <dt>Product state</dt>
-                <dd>{hasCompletedOnboarding ? "Setup complete" : "Waiting for first configuration"}</dd>
+                <dt>{appCopy.setup.productState}</dt>
+                <dd>{hasCompletedOnboarding ? appCopy.setup.setupComplete : appCopy.setup.waitingForConfiguration}</dd>
               </div>
               <div>
-                <dt>Next milestone</dt>
-                <dd>First session UI</dd>
+                <dt>{appCopy.setup.nextMilestone}</dt>
+                <dd>{appCopy.setup.nextMilestoneValue}</dd>
               </div>
               <div>
-                <dt>Provider mode</dt>
-                <dd>{currentProviderProfile.providerMode}</dd>
+                <dt>{appCopy.setup.providerMode}</dt>
+                <dd>{providerModeLabels[currentProviderProfile.providerMode]}</dd>
               </div>
             </div>
 
@@ -525,16 +498,16 @@ export function App() {
                 <strong>
                   {runtimeHealth.cliAvailable
                     ? runtimeHealth.loggedIn
-                      ? "Kimi runtime looks ready"
-                      : "Kimi CLI is installed, but login is still required"
-                    : "Kimi CLI was not found"}
+                      ? appCopy.setup.runtimeReadyTitle
+                      : appCopy.setup.runtimeLoginTitle
+                    : appCopy.setup.runtimeMissingTitle}
                 </strong>
                 <p>
                   {runtimeHealth.cliAvailable
                     ? runtimeHealth.loggedIn
-                      ? `Detected default model: ${runtimeHealth.configuredModel ?? "not set"}.`
-                      : "Run local Kimi login before expecting real Kimi runtime responses."
-                    : "Install Kimi CLI locally so the real Kimi adapter can run."}
+                      ? appCopy.setup.runtimeReadyDetail(runtimeHealth.configuredModel)
+                      : appCopy.setup.runtimeLoginDetail
+                    : appCopy.setup.runtimeMissingDetail}
                 </p>
               </div>
             ) : null}
@@ -548,7 +521,7 @@ export function App() {
             }}
           >
             <label className="field">
-              <span>Provider</span>
+              <span>{appCopy.setup.provider}</span>
               <select
                 className="field-select"
                 name="providerType"
@@ -573,44 +546,44 @@ export function App() {
             </label>
 
             <label className="field">
-              <span>API key</span>
+              <span>{appCopy.setup.apiKey}</span>
               <input
                 autoComplete="off"
                 name="apiKey"
-                placeholder={`Paste your ${currentProviderProfile.label} API key`}
+                placeholder={appCopy.setup.apiKeyPlaceholder(currentProviderProfile.label)}
                 type="password"
                 value={draft.apiKey}
                 onChange={(event) => updateField("apiKey", event.target.value)}
               />
-              <small>Required. The key is stored locally for this app.</small>
+              <small>{appCopy.setup.apiKeyHelp}</small>
               {validation.fieldErrors.apiKey ? (
                 <strong className="error-text">{validation.fieldErrors.apiKey}</strong>
               ) : null}
             </label>
 
             <label className="field">
-              <span>Default model</span>
+              <span>{appCopy.setup.defaultModel}</span>
               <input
                 name="defaultModel"
                 placeholder={currentProviderProfile.defaultModel}
                 value={draft.defaultModel}
                 onChange={(event) => updateField("defaultModel", event.target.value)}
               />
-              <small>Keep the default unless you already know another model you need.</small>
+              <small>{appCopy.setup.defaultModelHelp}</small>
               {validation.fieldErrors.defaultModel ? (
                 <strong className="error-text">{validation.fieldErrors.defaultModel}</strong>
               ) : null}
             </label>
 
             <label className="field">
-              <span>Base URL</span>
+              <span>{appCopy.setup.baseUrl}</span>
               <input
                 name="baseUrl"
                 placeholder={currentProviderProfile.baseUrl}
                 value={draft.baseUrl}
                 onChange={(event) => updateField("baseUrl", event.target.value)}
               />
-              <small>Only change this if your environment uses a different endpoint.</small>
+              <small>{appCopy.setup.baseUrlHelp}</small>
               {validation.fieldErrors.baseUrl ? (
                 <strong className="error-text">{validation.fieldErrors.baseUrl}</strong>
               ) : null}
@@ -618,12 +591,12 @@ export function App() {
 
             <div className="actions-row">
               <button className="primary-button" disabled={!validation.isValid || isSaving} type="submit">
-                {isSaving ? "Saving..." : hasCompletedOnboarding ? "Update setup" : "Save setup"}
+                {isSaving ? appCopy.setup.saving : hasCompletedOnboarding ? appCopy.setup.updateSetup : appCopy.setup.saveSetup}
               </button>
               <span className="helper-text">
                 {hasCompletedOnboarding
-                  ? "You can edit these settings any time."
-                  : "You only need this once to unlock the workspace."}
+                  ? appCopy.setup.canEditAnyTime
+                  : appCopy.setup.onlyNeedOnce}
               </span>
             </div>
 
@@ -636,19 +609,19 @@ export function App() {
         <aside className="session-sidebar card">
           <div className="session-sidebar-header">
             <div>
-              <p className="eyebrow">Sessions</p>
-              <h2>First session flow</h2>
+              <p className="eyebrow">{appCopy.sessions.eyebrow}</p>
+              <h2>{appCopy.sessions.title}</h2>
             </div>
             <button className="secondary-button" disabled={isCreatingSession} type="button" onClick={() => void handleCreateSession()}>
-              {isCreatingSession ? "Creating..." : "New session"}
+              {isCreatingSession ? appCopy.sessions.creating : appCopy.sessions.newSession}
             </button>
           </div>
 
           <div className="session-list">
             {sessions.length === 0 ? (
-              <div className="empty-state">
-                <p>No sessions yet.</p>
-                <span>Create one to preview the upcoming Kimi conversation flow.</span>
+                <div className="empty-state">
+                <p>{appCopy.sessions.emptyTitle}</p>
+                <span>{appCopy.sessions.emptyBody}</span>
               </div>
             ) : (
               sessions.map((session) => (
@@ -659,7 +632,7 @@ export function App() {
                   onClick={() => void handleOpenSession(session.id)}
                 >
                   <strong>{session.title}</strong>
-                  <span>{statusLabels[session.status]}</span>
+                  <span>{getRuntimeStatusLabel(session.status)}</span>
                 </button>
               ))
             )}
@@ -669,30 +642,30 @@ export function App() {
         <section className="session-main card">
           <div className="session-main-header">
             <div>
-              <p className="eyebrow">Conversation</p>
-              <h2>{activeSession ? activeSession.title : "Create your first session"}</h2>
+              <p className="eyebrow">{appCopy.sessions.conversationEyebrow}</p>
+              <h2>{activeSession ? activeSession.title : appCopy.sessions.createFirstSession}</h2>
               {activeSession ? (
                 <div className="session-meta-row">
                   <span>{activeSession.providerLabel}</span>
                   <span>{activeSession.model}</span>
-                  <span>{messageCount} messages</span>
+                  <span>{appCopy.sessions.messageCount(messageCount)}</span>
                 </div>
               ) : null}
             </div>
             <span className="session-state-pill">
-              {activeSession ? statusLabels[activeSession.status] : "Not started"}
+              {activeSession ? getRuntimeStatusLabel(activeSession.status) : appCopy.sessions.notStarted}
             </span>
           </div>
 
           <div className="message-list">
             {activeSession ? (
-              <section className="action-template-panel" aria-label="Guided actions">
+              <section className="action-template-panel" aria-label={appCopy.sessions.guidedActionsLabel}>
                 <div className="action-template-header">
                   <div>
-                    <strong>Quick starts</strong>
-                    <p>Run a common coding action without writing the prompt yourself.</p>
+                    <strong>{appCopy.sessions.quickStartsTitle}</strong>
+                    <p>{appCopy.sessions.quickStartsBody}</p>
                   </div>
-                  <span>{actionTemplates.length} templates</span>
+                  <span>{appCopy.sessions.templatesCount(actionTemplates.length)}</span>
                 </div>
                 <div className="action-template-grid">
                   {actionTemplates.map((template) => (
@@ -707,7 +680,7 @@ export function App() {
                         type="button"
                         onClick={() => void submitPrompt(template.prompt)}
                       >
-                        Run
+                        {appCopy.sessions.runTemplate}
                       </button>
                     </article>
                   ))}
@@ -723,11 +696,11 @@ export function App() {
             ) : null}
 
             {activeSession?.pendingApproval ? (
-              <section className="approval-panel" aria-label="Approval required">
+              <section className="approval-panel" aria-label={appCopy.sessions.approvalLabel}>
                 <div className="approval-copy">
-                  <strong>Approval required</strong>
+                  <strong>{appCopy.sessions.approvalRequired}</strong>
                   <p>{activeSession.pendingApproval.description}</p>
-                  <span>Action: {activeSession.pendingApproval.action}</span>
+                  <span>{appCopy.sessions.approvalAction}：{activeSession.pendingApproval.action}</span>
                 </div>
                 <div className="approval-actions">
                   <button
@@ -736,7 +709,7 @@ export function App() {
                     type="button"
                     onClick={() => void handleResolveApproval("reject")}
                   >
-                    {isResolvingApproval ? "Sending..." : "Reject"}
+                    {isResolvingApproval ? appCopy.sessions.sending : appCopy.sessions.reject}
                   </button>
                   <button
                     className="primary-button"
@@ -744,17 +717,17 @@ export function App() {
                     type="button"
                     onClick={() => void handleResolveApproval("approve")}
                   >
-                    {isResolvingApproval ? "Sending..." : "Approve"}
+                    {isResolvingApproval ? appCopy.sessions.sending : appCopy.sessions.approve}
                   </button>
                 </div>
               </section>
             ) : null}
 
             {activeSession?.runtimeLogs?.length ? (
-              <section className="runtime-log-panel" aria-label="Runtime activity">
+              <section className="runtime-log-panel" aria-label={appCopy.sessions.runtimeLogLabel}>
                 <div className="runtime-log-header">
-                  <strong>Runtime activity</strong>
-                  <span>{activeSession.runtimeLogs.length} events</span>
+                  <strong>{appCopy.sessions.runtimeActivity}</strong>
+                  <span>{appCopy.sessions.eventCount(activeSession.runtimeLogs.length)}</span>
                 </div>
                 <div className="runtime-log-list">
                   {activeSession.runtimeLogs
@@ -779,11 +752,11 @@ export function App() {
             ) : null}
 
             {activeSession ? (
-              <section className="diagnostics-panel" aria-label="Diagnostics">
+              <section className="diagnostics-panel" aria-label={appCopy.sessions.diagnosticsLabel}>
                 <div className="diagnostics-header">
                   <div>
-                    <strong>Diagnostics</strong>
-                    <p>Open a structured report for issue filing and advanced troubleshooting.</p>
+                    <strong>{appCopy.sessions.diagnostics}</strong>
+                    <p>{appCopy.sessions.diagnosticsBody}</p>
                   </div>
                   <div className="diagnostics-actions">
                     <button
@@ -794,10 +767,10 @@ export function App() {
                         setDiagnosticsCopyState(null);
                       }}
                     >
-                      {isDiagnosticsOpen ? "Hide report" : "Show report"}
+                      {isDiagnosticsOpen ? appCopy.sessions.hideReport : appCopy.sessions.showReport}
                     </button>
                     <button className="secondary-button" type="button" onClick={() => void handleCopyDiagnostics()}>
-                      Copy report
+                      {appCopy.sessions.copyReport}
                     </button>
                   </div>
                 </div>
@@ -805,7 +778,7 @@ export function App() {
                 {isDiagnosticsOpen ? (
                   <textarea
                     readOnly
-                    aria-label="Diagnostics report"
+                    aria-label={appCopy.sessions.diagnosticsReportLabel}
                     className="diagnostics-report"
                     value={diagnosticsReport}
                   />
@@ -817,7 +790,7 @@ export function App() {
               activeSession.messages.map((message) => (
                 <article className={`message-card message-${message.role}`} key={message.id}>
                   <div className="message-header">
-                    <span className="message-role">{message.role}</span>
+                    <span className="message-role">{messageRoleLabels[message.role]}</span>
                     <time className="message-time">
                       {new Date(message.createdAt).toLocaleTimeString([], {
                         hour: "2-digit",
@@ -825,13 +798,13 @@ export function App() {
                       })}
                     </time>
                   </div>
-                  <p>{message.content}</p>
-                </article>
-              ))
+                <p>{message.content}</p>
+              </article>
+            ))
             ) : (
               <div className="empty-state empty-state-large">
-                <p>Session area ready.</p>
-                <span>Create a session to see the message layout and prompt flow.</span>
+                <p>{appCopy.sessions.emptyConversationTitle}</p>
+                <span>{appCopy.sessions.emptyConversationBody}</span>
               </div>
             )}
           </div>
@@ -846,7 +819,7 @@ export function App() {
             <textarea
               className="prompt-input"
               disabled={!activeSession || isSendingPrompt}
-              placeholder="Ask Kimi for help with a coding task..."
+              placeholder={appCopy.prompt.placeholder}
               rows={4}
               value={prompt}
               onChange={(event) => setPrompt(event.target.value)}
@@ -856,21 +829,21 @@ export function App() {
                 {activeSession
                   ? draft.providerType === "kimi"
                     ? runtimeHealth?.cliAvailable
-                      ? runtimeHealth.loggedIn
-                        ? "Kimi runtime path is enabled. If the request fails, the session will show a runtime note."
-                        : "Kimi provider is selected, but local login is still required."
-                      : "Kimi provider is selected, but local Kimi CLI is not installed."
-                    : "Compatible providers still use the placeholder path for now."
-                  : "Create a session first to unlock the prompt box."}
+                        ? runtimeHealth.loggedIn
+                        ? appCopy.prompt.kimiReady
+                        : appCopy.prompt.kimiLoginRequired
+                      : appCopy.prompt.kimiCliMissing
+                    : appCopy.prompt.compatiblePlaceholder
+                  : appCopy.prompt.createSessionFirst}
               </span>
               <div className="prompt-action-group">
-                <span className="char-count">{prompt.trim().length} chars</span>
+                <span className="char-count">{appCopy.prompt.chars(prompt.trim().length)}</span>
                 <button
                   className="primary-button"
                   disabled={!activeSession || !prompt.trim() || isSendingPrompt}
                   type="submit"
                 >
-                  {isSendingPrompt ? "Sending..." : "Send prompt"}
+                  {isSendingPrompt ? appCopy.prompt.sendingPrompt : appCopy.prompt.sendPrompt}
                 </button>
               </div>
             </div>

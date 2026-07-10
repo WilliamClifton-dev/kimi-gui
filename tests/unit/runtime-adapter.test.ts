@@ -70,7 +70,7 @@ describe("placeholderRuntimeAdapter", () => {
       })
     });
 
-    expect(result.messages[2]?.content).toContain("deepseek compatible runtime");
+    expect(result.messages[2]?.content).toContain("DeepSeek 兼容模式");
   });
 
   it("keeps non-kimi providers on the placeholder path", async () => {
@@ -87,6 +87,6 @@ describe("placeholderRuntimeAdapter", () => {
       })
     });
 
-    expect(result.messages[2]?.content).toContain("openai compatible runtime");
+    expect(result.messages[2]?.content).toContain("OpenAI 兼容模式");
   });
 });

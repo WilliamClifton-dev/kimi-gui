@@ -23,7 +23,7 @@ export const PROVIDER_PROFILES: ProviderProfile[] = [
     baseUrl: "https://api.moonshot.cn/v1",
     defaultModel: "kimi-k2-0711-preview",
     providerMode: "kimi-native",
-    helpText: "Best fit for the full Kimi-native workflow and future advanced capabilities."
+    helpText: "最适合保留完整的 Kimi 原生工作流，以及未来的高级能力。"
   },
   {
     type: "openai",
@@ -31,7 +31,7 @@ export const PROVIDER_PROFILES: ProviderProfile[] = [
     baseUrl: "https://api.openai.com/v1",
     defaultModel: "gpt-4.1",
     providerMode: "compatible",
-    helpText: "Compatible mode for OpenAI APIs. Some Kimi-specific features may differ."
+    helpText: "面向 OpenAI API 的兼容模式。部分 Kimi 特有能力会有所差异。"
   },
   {
     type: "deepseek",
@@ -39,7 +39,7 @@ export const PROVIDER_PROFILES: ProviderProfile[] = [
     baseUrl: "https://api.deepseek.com",
     defaultModel: "deepseek-chat",
     providerMode: "compatible",
-    helpText: "Compatible mode for DeepSeek's OpenAI-style API surface."
+    helpText: "面向 DeepSeek OpenAI 风格接口的兼容模式。"
   },
   {
     type: "anthropic",
@@ -47,7 +47,7 @@ export const PROVIDER_PROFILES: ProviderProfile[] = [
     baseUrl: "https://api.anthropic.com",
     defaultModel: "claude-sonnet-4-20250514",
     providerMode: "compatible",
-    helpText: "Compatible mode for Anthropic-backed usage."
+    helpText: "面向 Anthropic 接口的兼容模式。"
   },
   {
     type: "gemini",
@@ -55,7 +55,7 @@ export const PROVIDER_PROFILES: ProviderProfile[] = [
     baseUrl: "https://generativelanguage.googleapis.com",
     defaultModel: "gemini-2.5-pro",
     providerMode: "compatible",
-    helpText: "Compatible mode for Gemini-backed experiments."
+    helpText: "面向 Gemini 接口实验的兼容模式。"
   }
 ];
 
@@ -102,19 +102,19 @@ export function validateSettingsDraft(draft: SettingsDraft): SettingsValidation 
   }
 
   if (!sanitized.defaultModel) {
-    fieldErrors.defaultModel = "Choose a default model.";
+    fieldErrors.defaultModel = "请选择默认模型。";
   }
 
   if (!sanitized.baseUrl) {
-    fieldErrors.baseUrl = "Base URL is required.";
+    fieldErrors.baseUrl = "Base URL 不能为空。";
   } else {
     try {
       const parsed = new URL(sanitized.baseUrl);
       if (!["http:", "https:"].includes(parsed.protocol)) {
-        fieldErrors.baseUrl = "Base URL must start with http:// or https://.";
+        fieldErrors.baseUrl = "Base URL 必须以 http:// 或 https:// 开头。";
       }
     } catch {
-      fieldErrors.baseUrl = "Base URL must be a valid URL.";
+      fieldErrors.baseUrl = "Base URL 必须是有效的 URL。";
     }
   }
 
