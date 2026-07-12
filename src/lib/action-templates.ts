@@ -1,4 +1,4 @@
-import type { ActionTemplate, ProviderMode } from "../shared/contracts";
+import type { ActionTemplate, ProviderMode } from "../shared/contracts.js";
 
 const KIMI_NATIVE_NOTE =
   "请用中文回答，保持内容实用、结构清晰，并尽量贴合 Kimi 编码工作流。";

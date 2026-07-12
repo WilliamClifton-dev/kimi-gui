@@ -1,4 +1,4 @@
-import type { SettingsRecord } from "../../src/shared/contracts";
+import type { SettingsRecord } from "../../src/shared/contracts.js";
 
 export type RuntimeBridgeConfig = {
   env: Record<string, string>;

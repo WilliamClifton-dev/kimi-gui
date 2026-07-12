@@ -5,9 +5,9 @@ import type {
   SessionSummary,
   SettingsDraft,
   SettingsRecord
-} from "../shared/contracts";
-import { runtimeCopy } from "./copy";
-import { DEFAULT_SETTINGS, getProviderProfile, sanitizeSettingsDraft } from "./settings";
+} from "../shared/contracts.js";
+import { runtimeCopy } from "./copy.js";
+import { DEFAULT_SETTINGS, getProviderProfile, sanitizeSettingsDraft } from "./settings.js";
 
 const fallbackSessions: SessionDetail[] = [];
 

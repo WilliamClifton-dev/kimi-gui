@@ -1,4 +1,4 @@
-import type { AppInfo, ProviderMode, RuntimeStatus } from "../shared/contracts";
+import type { AppInfo, ProviderMode, RuntimeStatus } from "../shared/contracts.js";
 
 export const runtimeStatusLabels: Record<RuntimeStatus, string> = {
   idle: "空闲",

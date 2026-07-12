@@ -1,8 +1,8 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { App } from "electron";
-import { DEFAULT_SETTINGS } from "../../src/lib/settings";
-import type { SettingsRecord } from "../../src/shared/contracts";
+import { DEFAULT_SETTINGS } from "../../src/lib/settings.js";
+import type { SettingsRecord } from "../../src/shared/contracts.js";
 
 function getSettingsPath(app: App) {
   return path.join(app.getPath("userData"), "settings.json");

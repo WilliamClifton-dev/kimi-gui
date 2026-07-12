@@ -1,4 +1,4 @@
-import type { BootstrapData, SessionDetail } from "../shared/contracts";
+import type { BootstrapData, SessionDetail } from "../shared/contracts.js";
 
 export function buildDiagnosticsReport(input: {
   bootstrap: BootstrapData | null;
