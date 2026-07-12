@@ -9,7 +9,7 @@
 >
 > 项目验证了 Electron 中接入 Kimi Agent SDK、流式输出、GUI 审批、环境诊断和 Windows 发布流程。调研后发现，官方 Kimi 桌面端与 `kimi web` 已覆盖大部分工作区需求，CC Switch 也已完整覆盖多供应商配置管理。继续扩展会变成重复建设，因此保留成果，不再追求完整产品化。
 
-![Kimi GUI 中文首页](docs/assets/homepage-kimi-style.png)
+![Kimi Code 新手助手项目展示](docs/assets/project-showcase.png)
 
 ## 做过什么
 
