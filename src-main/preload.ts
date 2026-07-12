@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
-import type { DesktopBridge, SessionStreamUpdate } from "../src/shared/contracts";
+import type { DesktopBridge, SessionStreamUpdate } from "../src/shared/contracts.js";
 
 const bridge: DesktopBridge = {
   getBootstrapData: () => ipcRenderer.invoke("app:get-bootstrap-data"),

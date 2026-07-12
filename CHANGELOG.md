@@ -6,6 +6,12 @@ The format is intentionally simple and human-readable.
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-07-12
+
+### Fixed
+- Added explicit `.js` extensions to Electron main-process imports so packaged apps start under Node ESM rules
+- Added a packaging regression test that rejects extensionless runtime imports
+
 ## [0.2.0] - 2026-07-10
 
 ### Added

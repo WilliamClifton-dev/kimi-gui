@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { App } from "electron";
-import type { SessionDetail, SessionSummary } from "../../src/shared/contracts";
+import type { SessionDetail, SessionSummary } from "../../src/shared/contracts.js";
 
 function getSessionsPath(app: App) {
   return path.join(app.getPath("userData"), "sessions.json");

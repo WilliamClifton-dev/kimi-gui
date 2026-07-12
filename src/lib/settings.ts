@@ -4,8 +4,8 @@ import type {
   SettingsDraft,
   SettingsRecord,
   SettingsValidation
-} from "../shared/contracts";
-import { validateApiKey } from "./validate-api-key";
+} from "../shared/contracts.js";
+import { validateApiKey } from "./validate-api-key.js";
 
 export type ProviderProfile = {
   type: ProviderType;
