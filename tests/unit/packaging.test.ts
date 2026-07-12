@@ -18,6 +18,12 @@ const packageJson = JSON.parse(
 };
 
 describe("desktop packaging", () => {
+  it("uses relative renderer assets for file-based Electron pages", () => {
+    const viteConfig = fs.readFileSync(path.resolve(process.cwd(), "vite.config.ts"), "utf8");
+
+    expect(viteConfig).toContain('base: "./"');
+  });
+
   it("uses Node-compatible extensions in compiled main-process imports", () => {
     const sourceRoots = ["src-main", "src/lib"];
     const invalidImports = sourceRoots.flatMap((sourceRoot) => {
