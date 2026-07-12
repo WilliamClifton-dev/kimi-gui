@@ -11,6 +11,21 @@ export type CredentialCheck =
   | { status: "valid" }
   | { status: "invalid"; reason: string };
 
+export type KimiEnvironmentReport = {
+  status: "ready" | "missing" | "setup_required";
+  cliAvailable: boolean;
+  cliVersion: string | null;
+  loggedIn: boolean;
+  configuredModel: string | null;
+  summary: string;
+  nextAction: string;
+};
+
+export type KimiWebLaunchResult = {
+  ok: boolean;
+  message: string;
+};
+
 export type AppInfo = {
   productName: string;
   version: string;
@@ -116,6 +131,9 @@ export type ApprovalDecision = "approve" | "reject";
 
 export type DesktopBridge = {
   getBootstrapData: () => Promise<BootstrapData>;
+  inspectKimiEnvironment: () => Promise<KimiEnvironmentReport>;
+  selectProjectDirectory: () => Promise<string | null>;
+  launchKimiWeb: (projectPath: string) => Promise<KimiWebLaunchResult>;
   saveSettings: (draft: SettingsDraft) => Promise<SettingsRecord>;
   listSessions: () => Promise<SessionSummary[]>;
   createSession: () => Promise<SessionDetail>;

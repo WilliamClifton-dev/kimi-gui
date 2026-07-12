@@ -1,7 +1,7 @@
 # ADR-0001: Position the product as a beginner-first Kimi coding workspace inspired by Claude Code
 
 ## Status
-Accepted
+Superseded by ADR-0005
 
 ## Date
 2026-07-08

@@ -1,10 +1,11 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, dialog, ipcMain } from "electron";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { DEFAULT_SETTINGS, getProviderProfile, sanitizeSettingsDraft } from "../src/lib/settings.js";
 import { runtimeCopy } from "../src/lib/copy.js";
 import { resolvePendingApproval, runtimeAdapter } from "./integration/runtime-adapter.js";
-import { getRuntimeHealth } from "./integration/runtime-health.js";
+import { getRuntimeHealth, inspectKimiEnvironment } from "./integration/runtime-health.js";
+import { launchKimiWeb } from "./integration/kimi-web-launcher.js";
 import { loadSettings, saveSettings } from "./storage/settings-store.js";
 import { loadSessions, saveSessions, toSessionSummary } from "./storage/sessions-store.js";
 import { getPackagedRendererPath } from "./window-paths.js";
@@ -47,6 +48,21 @@ function createWindow() {
 }
 
 function registerIpcHandlers() {
+  ipcMain.handle("companion:inspect-environment", () => inspectKimiEnvironment());
+
+  ipcMain.handle("companion:select-project", async () => {
+    const result = await dialog.showOpenDialog({
+      title: "选择要交给 Kimi Code 的项目",
+      properties: ["openDirectory", "createDirectory"]
+    });
+
+    return result.canceled ? null : result.filePaths[0] ?? null;
+  });
+
+  ipcMain.handle("companion:launch-kimi-web", (_event, projectPath: string) =>
+    launchKimiWeb(projectPath)
+  );
+
   ipcMain.handle("app:get-bootstrap-data", async () => {
     const appInfo: AppInfo = {
       productName: "Kimi GUI",

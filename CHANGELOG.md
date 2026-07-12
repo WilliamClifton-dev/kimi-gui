@@ -6,6 +6,18 @@ The format is intentionally simple and human-readable.
 
 ## [Unreleased]
 
+### Added
+- Added a Chinese-first Kimi Code environment doctor for installation, login, version, and model status
+- Added native project-folder selection and a guarded launcher for the official `kimi web` workspace
+- Added product validation notes and ADR-0005 documenting the beginner-companion pivot
+
+### Changed
+- Replaced the chat-first renderer with a focused check, select, and launch prototype
+- Marked the project as a paused experiment after official and community alternatives covered the broader product space
+
+### Fixed
+- Configured Vite to emit relative asset paths so packaged Electron windows do not render blank
+
 ## [0.2.1] - 2026-07-12
 
 ### Fixed

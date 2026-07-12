@@ -3,6 +3,9 @@ import type { DesktopBridge, SessionStreamUpdate } from "../src/shared/contracts
 
 const bridge: DesktopBridge = {
   getBootstrapData: () => ipcRenderer.invoke("app:get-bootstrap-data"),
+  inspectKimiEnvironment: () => ipcRenderer.invoke("companion:inspect-environment"),
+  selectProjectDirectory: () => ipcRenderer.invoke("companion:select-project"),
+  launchKimiWeb: (projectPath) => ipcRenderer.invoke("companion:launch-kimi-web", projectPath),
   saveSettings: (draft) => ipcRenderer.invoke("app:save-settings", draft),
   listSessions: () => ipcRenderer.invoke("sessions:list"),
   createSession: () => ipcRenderer.invoke("sessions:create"),

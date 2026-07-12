@@ -42,6 +42,26 @@ const browserFallbackBridge: DesktopBridge = {
       }
     };
   },
+  async inspectKimiEnvironment() {
+    return {
+      status: "missing",
+      cliAvailable: false,
+      cliVersion: null,
+      loggedIn: false,
+      configuredModel: null,
+      summary: "浏览器预览无法检测本机环境",
+      nextAction: "请启动桌面版进行真实检测。"
+    };
+  },
+  async selectProjectDirectory() {
+    return "D:\\Projects\\示例项目";
+  },
+  async launchKimiWeb() {
+    return {
+      ok: false,
+      message: "浏览器预览不会启动本机程序，请使用桌面版。"
+    };
+  },
   async saveSettings(draft: SettingsDraft): Promise<SettingsRecord> {
     return {
       ...sanitizeSettingsDraft(draft),
