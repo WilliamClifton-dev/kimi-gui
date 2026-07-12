@@ -1,4 +1,4 @@
-import type { SessionDetail, SessionSummary } from "../shared/contracts";
+import type { SessionDetail, SessionSummary } from "../shared/contracts.js";
 
 export function formatSessionTitle(messages: SessionDetail["messages"], fallbackTitle: string) {
   const firstUserMessage = messages.find((message) => message.role === "user");

@@ -1,13 +1,13 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { DEFAULT_SETTINGS, getProviderProfile, sanitizeSettingsDraft } from "../src/lib/settings";
-import { runtimeCopy } from "../src/lib/copy";
-import { resolvePendingApproval, runtimeAdapter } from "./integration/runtime-adapter";
-import { getRuntimeHealth } from "./integration/runtime-health";
-import { loadSettings, saveSettings } from "./storage/settings-store";
-import { loadSessions, saveSessions, toSessionSummary } from "./storage/sessions-store";
-import { getPackagedRendererPath } from "./window-paths";
+import { DEFAULT_SETTINGS, getProviderProfile, sanitizeSettingsDraft } from "../src/lib/settings.js";
+import { runtimeCopy } from "../src/lib/copy.js";
+import { resolvePendingApproval, runtimeAdapter } from "./integration/runtime-adapter.js";
+import { getRuntimeHealth } from "./integration/runtime-health.js";
+import { loadSettings, saveSettings } from "./storage/settings-store.js";
+import { loadSessions, saveSessions, toSessionSummary } from "./storage/sessions-store.js";
+import { getPackagedRendererPath } from "./window-paths.js";
 import type {
   ApprovalDecision,
   AppInfo,
@@ -16,7 +16,7 @@ import type {
   SessionStreamUpdate,
   SettingsDraft,
   SettingsRecord
-} from "../src/shared/contracts";
+} from "../src/shared/contracts.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

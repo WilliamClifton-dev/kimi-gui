@@ -1,4 +1,4 @@
-import type { CredentialCheck } from "../shared/contracts";
+import type { CredentialCheck } from "../shared/contracts.js";
 
 export function validateApiKey(input: string): CredentialCheck {
   const value = input.trim();

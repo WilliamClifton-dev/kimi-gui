@@ -4,10 +4,10 @@ import {
   getErrorCode,
   isAgentSdkError
 } from "@moonshot-ai/kimi-agent-sdk";
-import { formatSessionTitle } from "../../src/lib/sessions";
-import { runtimeCopy } from "../../src/lib/copy";
-import { mapKimiRuntimeError } from "./runtime-messages";
-import { buildRuntimeBridgeConfig } from "./config-bridge";
+import { formatSessionTitle } from "../../src/lib/sessions.js";
+import { runtimeCopy } from "../../src/lib/copy.js";
+import { mapKimiRuntimeError } from "./runtime-messages.js";
+import { buildRuntimeBridgeConfig } from "./config-bridge.js";
 import type {
   ProviderType,
   SessionDetail,
@@ -15,7 +15,7 @@ import type {
   RuntimeLogEntry,
   PendingApproval,
   SettingsRecord
-} from "../../src/shared/contracts";
+} from "../../src/shared/contracts.js";
 
 export type RuntimeExecutionInput = {
   providerType: ProviderType;
