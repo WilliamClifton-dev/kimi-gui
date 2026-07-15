@@ -30,7 +30,7 @@
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^5.0.2",
     "concurrently": "^9.2.0",
-    "electron": "^43.1.0",
+    "electron": "^43.1.1",
     "electron-builder": "^26.15.3",
     "eslint": "^10.6.0",
     "globals": "^17.7.0",
